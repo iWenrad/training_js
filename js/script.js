@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 	
-	// Show modal window after 6s
+	// Show modal window after 6s.
 
 	const modalInterval = setInterval(showModalWindow, 6000);
 });
