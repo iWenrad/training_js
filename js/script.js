@@ -103,4 +103,38 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	setClock('.timer', deadline)
+
+	// Show modal window
+
+	const show = document.querySelector('.btn'), 
+				someModalWindow = document.querySelector('.modal');
+
+	function showModalWindow() {
+		someModalWindow.classList.add('show');
+		someModalWindow.classList.remove('hide');
+		document.body.style.overflow = 'hidden';
+		clearInterval(modalInterval);
+	}
+	
+	// Close modal window
+
+	function hideModalWindow() {
+		someModalWindow.classList.add('hide');
+		someModalWindow.classList.remove('show');
+		document.body.style.overflow = '';
+	}
+
+		
+	show.addEventListener('click', showModalWindow);
+	someModalWindow.addEventListener('click', (e) => {
+		const target = e.target;
+
+		if (target.classList.contains('modal__close') || target.classList.contains('modal')) {
+			hideModalWindow();
+		}
+	});
+	
+	// Show modal window after 6s
+
+	const modalInterval = setInterval(showModalWindow, 6000);
 });
