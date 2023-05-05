@@ -123,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		someModalWindow.classList.remove('show');
 		document.body.style.overflow = '';
 	}
-
 		
 	show.addEventListener('click', showModalWindow);
 	someModalWindow.addEventListener('click', (e) => {
@@ -137,4 +136,17 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Show modal window after 6s.
 
 	const modalInterval = setInterval(showModalWindow, 6000);
+
+	// Show modal window after scroll
+
+	function showModalAfterScroll() {
+		if (window.pageYOffset +
+				document.documentElement.clientHeight >=
+				document.documentElement.scrollHeight - 1) {
+					showModalWindow();
+					window.removeEventListener('scroll', showModalAfterScroll);
+				}
+	}
+
+	window.addEventListener('scroll', showModalAfterScroll);
 });
