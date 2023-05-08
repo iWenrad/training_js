@@ -152,74 +152,56 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // class CreateCards
-  
+
   class CreateCards {
     constructor(cardContainer, data) {
-      this.cardContainer = cardContainer;
+      this.card = document.querySelector(cardContainer);
       this.data = data;
     }
 
     create() {
-      const {img, title, text, price} = this.data;
+      const { img, title, text, price } = this.data;
 
-      const card = document.createElement("div"),
-        		imgElem = document.createElement("img"),
-        		titleElem = document.createElement("h3"),
-        		textElem = document.createElement("div"),
-        		line = document.createElement("div"),
-        		priceList = document.createElement("div"),
-        		cost = document.createElement("div"),
-        		priceElem = document.createElement("div");
+      const element = document.createElement("div");
 
-      imgElem.src = img;
-      titleElem.textContent = title;
-      textElem.textContent = text;
-      cost.textContent = "Цена";
-      priceElem.textContent = `${price} грн/день`;
+      element.innerHTML = `
+        <div class="menu__item">
+          <img src=${img} alt="vegy">
+          <h3 class="menu__item-subtitle">${title}</h3>
+          <div class="menu__item-descr">${text}</div>
+          <div class="menu__item-divider"></div>
+          <div class="menu__item-price">
+              <div class="menu__item-cost">Цена:</div>
+              <div class="menu__item-total"><span>${price}</span> грн/день</div>
+          </div>
+        </div>`;
 
-      card.classList.add("menu__item");
-      titleElem.classList.add("menu__item-subtitle");
-      textElem.classList.add("menu__item-descr");
-      line.classList.add("menu__item-divider");
-      priceList.classList.add("menu__item-price");
-      cost.classList.add("menu__item-cost");
-      priceElem.classLxist.add("menu__item-total");
-
-      card.appendChild(imgElem);
-      card.appendChild(titleElem);
-      card.appendChild(textElem);
-      priceList.appendChild(cost);
-      priceList.appendChild(priceElem);
-      card.appendChild(priceList);
-
-      this.cardContainer.appendChild(card);
+      this.card.append(element);
     }
   }
 
-  const cardContainer = document.querySelector(".menu__list");
-
-  const cardOne = new CreateCards(cardContainer, {
+  const cardOne = new CreateCards(".menu .container", {
     img: "img/tabs/vegy.jpg",
-    title: 'Меню "фитнес 1"',
+    title: 'Меню "Фитнес"',
     text: 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
     price: "200",
+  });
+  
+  const cardTwo = new CreateCards(".menu .container", {
+    img: "img/tabs/elite.jpg",
+    title: 'Меню “Премиум”"',
+    text: '>В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+    price: "550",
   });
 
-	const cardTwo = new CreateCards(cardContainer, {
-    img: "img/tabs/vegy.jpg",
-    title: 'Меню "фитнес 2"',
-    text: 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    price: "200",
+  const cardThree = new CreateCards(".menu .container", {
+    img: "img/tabs/post.jpg",
+    title: 'Меню "Постное"',
+    text: 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+    price: "430",
   });
-	
-	const cardThree = new CreateCards(cardContainer, {
-    img: "img/tabs/vegy.jpg",
-    title: '3',
-    text: 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    price: "200",
-  });
-	
+
   cardOne.create();
-	cardTwo.create();
-	cardThree.create();
+  cardTwo.create();
+  cardThree.create();
 });
