@@ -154,13 +154,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // class CreateCards
 
   class CreateCards {
-    constructor(cardContainer, data) {
+    constructor(cardContainer, data, ...classes) {
       this.card = document.querySelector(cardContainer);
       this.data = data;
+      this.classes = classes;
     }
 
     create() {
       const { img, title, text, price } = this.data;
+
+      if (this.classes.length === 0) {
+        this.classes = "menu__item";
+        element.classList.add(this.classes);
+      } else {
+        this.classes.forEach(className => element.classList.add(className));
+      }
 
       const element = document.createElement("div");
 
