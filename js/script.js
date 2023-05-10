@@ -219,40 +219,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const forms = document.querySelectorAll("form");
 
-  const message = {
-    loadong: "Загрузка",
-    success: "Дякую! Ми скоро з вами звяжемось",
-    failture: "Щось пішло не так",
-  };
+const message = {
+  loading: "Загрузка",
+  success: "Дякую! Ми скоро з вами зв'яжемось",
+  failure: "Щось пішло не так",
+};
 
-  forms.forEach(item => {
-    postData(item);
-  })
+forms.forEach((form) => {
+  postData(form);
+});
 
-  function postData(form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+function postData(form) {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-      const statusMassage = document.createElement("div");
-      statusMassage.classList.add("status");
-      statusMassage.textContent = message.loading;
-      form.append(statusMassage);
+    const statusMessage = document.createElement("div");
+    statusMessage.classList.add("status");
+    statusMessage.textContent = message.loading;
+    form.append(statusMessage);
 
-      const r = new XMLHttpRequest();
-      const formData = new FormData(form);
+    const xhr = new XMLHttpRequest();
+    const formData = new FormData(form);
 
-      r.open("POST", "server.php");
-      r.setRequestHeader("Content-type", "multipart/form-data");
-      r.send(formData);
-      r.addEventListener("load", () => {
-        if (r.status === 200) {
-          console.log(r.response);
+    xhr.open("POST", "server.php");
+    xhr.setRequestHeader('Content-type', 'application/json');
 
-          statusMassage.textContent = message.success;
-        } else {
-          statusMassage.textContent = message.failture;
-        }
-      });
+    const object = {};
+    formData.forEach(function(value, key) {
+      object[key] = value;
     });
-  }
+
+    const json = JSON.stringify(object);
+
+    xhr.send(json);
+    xhr.addEventListener("load", () => {
+      if (xhr.status === 200) {
+        console.log(xhr.response);
+        statusMessage.textContent = message.success;
+        form.reset();
+
+        setTimeout(() => {
+          statusMessage.remove();
+        }, 2000);
+      } else {
+        statusMessage.textContent = message.failure;
+      }
+    });
+  });
+}
+
 });
