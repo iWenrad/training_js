@@ -129,7 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       target.classList.contains("modal__close") ||
-      target.classList.contains("modal")
+      target.classList.contains("modal") ||
+      target.getAttribute('data-close') == ''
     ) {
       hideModalWindow();
     }
@@ -219,53 +220,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const forms = document.querySelectorAll("form");
 
-const message = {
-  loading: "Загрузка",
-  success: "Дякую! Ми скоро з вами зв'яжемось",
-  failure: "Щось пішло не так",
-};
+  const message = {
+    loading: "Загрузка",
+    success: "Дякую! Ми скоро з вами зв'яжемось",
+    failure: "Щось пішло не так",
+  };
 
-forms.forEach((form) => {
-  postData(form);
-});
-
-function postData(form) {
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const statusMessage = document.createElement("div");
-    statusMessage.classList.add("status");
-    statusMessage.textContent = message.loading;
-    form.append(statusMessage);
-
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData(form);
-
-    xhr.open("POST", "server.php");
-    xhr.setRequestHeader('Content-type', 'application/json');
-
-    const object = {};
-    formData.forEach(function(value, key) {
-      object[key] = value;
-    });
-
-    const json = JSON.stringify(object);
-
-    xhr.send(json);
-    xhr.addEventListener("load", () => {
-      if (xhr.status === 200) {
-        console.log(xhr.response);
-        statusMessage.textContent = message.success;
-        form.reset();
-
-        setTimeout(() => {
-          statusMessage.remove();
-        }, 2000);
-      } else {
-        statusMessage.textContent = message.failure;
-      }
-    });
+  forms.forEach((form) => {
+    postData(form);
   });
-}
 
+  function postData(form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData(form);
+
+      xhr.open("POST", "server.php");
+      xhr.setRequestHeader("Content-type", "application/json");
+
+      const object = {};
+      formData.forEach(function (value, key) {
+        object[key] = value;
+      });
+
+      const json = JSON.stringify(object);
+
+      xhr.send(json);
+      xhr.addEventListener("load", () => {
+        if (xhr.status === 200) {
+          console.log(xhr.response);
+          showThanksModal(message.success);
+          form.reset();
+
+          setTimeout(() => {
+            statusMessage.remove();
+          }, 2000);
+        } else {
+          showThanksModal(message.failure);
+          form.reset();
+        }
+      });
+    });
+  }
+
+  function showThanksModal(msg) {
+    const prevModalDialog = document.querySelector('.modal__dialog');
+    
+    prevModalDialog.classList.add('hide');
+    showModalWindow();
+    
+    // New content
+
+    const thanksModal = document.createElement('div');
+    thanksModal.classList.add('modal__dialog');
+
+    thanksModal.innerHTML = `
+      <div class="modal__content">
+        <div class="modal__close" data-close>&times;</div>
+        <div class="modal__title">${msg}</div>
+      </div>
+    
+    `;
+
+    document.querySelector('.modal').append(thanksModal);
+    setTimeout(() => {
+      thanksModal.remove();
+      prevModalDialog.classList.add('show');
+      prevModalDialog.classList.remove('hide');
+      prevModalDialog.show();
+    }, 5000);
+  }
+  
 });
