@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (
       target.classList.contains("modal__close") ||
       target.classList.contains("modal") ||
-      target.getAttribute('data-close') == ''
+      target.getAttribute("data-close") == ""
     ) {
       hideModalWindow();
     }
@@ -234,47 +234,41 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const xhr = new XMLHttpRequest();
       const formData = new FormData(form);
-
-      xhr.open("POST", "server.php");
-      xhr.setRequestHeader("Content-type", "application/json");
-
+      
       const object = {};
       formData.forEach(function (value, key) {
         object[key] = value;
       });
-
-      const json = JSON.stringify(object);
-
-      xhr.send(json);
-      xhr.addEventListener("load", () => {
-        if (xhr.status === 200) {
-          console.log(xhr.response);
+      
+      fetch("server.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: formData,
+      })
+        .then((data) => {
+          console.log(data);
           showThanksModal(message.success);
-          form.reset();
-
-          setTimeout(() => {
-            statusMessage.remove();
-          }, 2000);
-        } else {
+        })
+        .catch(() => {
           showThanksModal(message.failure);
+        })
+        .finally(() => {
           form.reset();
-        }
-      });
+        });
     });
   }
 
   function showThanksModal(msg) {
-    const prevModalDialog = document.querySelector('.modal__dialog');
-    
-    prevModalDialog.classList.add('hide');
+    const prevModalDialog = document.querySelector(".modal__dialog");
+
+    prevModalDialog.classList.add("hide");
     showModalWindow();
-    
+
     // New content
 
-    const thanksModal = document.createElement('div');
-    thanksModal.classList.add('modal__dialog');
+    const thanksModal = document.createElement("div");
+    thanksModal.classList.add("modal__dialog");
 
     thanksModal.innerHTML = `
       <div class="modal__content">
@@ -284,13 +278,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
     `;
 
-    document.querySelector('.modal').append(thanksModal);
+    document.querySelector(".modal").append(thanksModal);
     setTimeout(() => {
       thanksModal.remove();
-      prevModalDialog.classList.add('show');
-      prevModalDialog.classList.remove('hide');
-      prevModalDialog.show();
+      prevModalDialog.classList.add("show");
+      prevModalDialog.classList.remove("hide");
+      hideModalWindow();
     }, 5000);
   }
-  
 });
