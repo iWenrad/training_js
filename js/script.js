@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Timer
 
-  const deadline = "2023-05-20";
+  const deadline = "2023-06-5";
 
   function getTimeRemaining(endtime) {
     const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show modal window
 
-  const show = document.querySelector(".btn"),
+  const show = document.querySelector("button"),
     someModalWindow = document.querySelector(".modal");
 
   function showModalWindow() {
@@ -156,16 +156,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // class CreateCards
 
-  class CreateCards {
-    constructor(cardContainer, data, ...classes) {
-      this.card = document.querySelector(cardContainer);
-      this.data = data;
+  class MenuCard {
+    constructor(src, alt, title, descr, price, parentSelector, ...classes) {
+      this.src = src;
+      this.alt = alt;
+      this.title = title;
+      this.descr = descr;
+      this.price = price;
       this.classes = classes;
+      this.parent = document.querySelector(parentSelector);
+      this.transfer = 27;
+      this.changeToUAH();
     }
 
-    create() {
-      const { img, title, text, price } = this.data;
+    changeToUAH() {
+      this.price = this.price * this.transfer;
+    }
 
+    render() {
       const element = document.createElement("div");
 
       if (this.classes.length === 0) {
@@ -176,45 +184,46 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       element.innerHTML = `
-        <div class="menu__item">
-          <img src=${img} alt="vegy">
-          <h3 class="menu__item-subtitle">${title}</h3>
-          <div class="menu__item-descr">${text}</div>
-          <div class="menu__item-divider"></div>
-          <div class="menu__item-price">
-              <div class="menu__item-cost">Цена:</div>
-              <div class="menu__item-total"><span>${price}</span> грн/день</div>
-          </div>
-        </div>`;
-
-      this.card.append(element);
+            <img src=${this.src} alt=${this.alt}>
+            <h3 class="menu__item-subtitle">${this.title}</h3>
+            <div class="menu__item-descr">${this.descr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+            </div>
+        `;
+      this.parent.append(element);
     }
   }
 
-  const cardOne = new CreateCards(".menu .container", {
-    img: "img/tabs/vegy.jpg",
-    title: 'Меню "Фитнес"',
-    text: 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    price: "200",
-  });
+  // getRes("http://localhost:3000/main").then((data) => {
+  // data.forEach(({ img, altimg, title, descr, price }) => {
+  //   new MenuCard(
+  //     img,
+  //     altimg,
+  //     title,
+  //     descr,
+  //     price,
+  //     ".menu .container"
+  //   ).render();
+  // });
+  // });
 
-  const cardTwo = new CreateCards(".menu .container", {
-    img: "img/tabs/elite.jpg",
-    title: 'Меню “Премиум”"',
-    text: ">В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
-    price: "550",
-  });
+  // use axios
 
-  const cardThree = new CreateCards(".menu .container", {
-    img: "img/tabs/post.jpg",
-    title: 'Меню "Постное"',
-    text: "Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
-    price: "430",
+  axios.get("http://localhost:3000/main").then((data) => {
+    data.data.forEach(({ img, altimg, title, descr, price }) => {
+      new MenuCard(
+        img,
+        altimg,
+        title,
+        descr,
+        price,
+        ".menu .container"
+      ).render();
+    });
   });
-
-  cardOne.create();
-  cardTwo.create();
-  cardThree.create();
 
   // Forms
 
@@ -227,25 +236,42 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   forms.forEach((form) => {
-    postData(form);
+    bindPostData(form);
   });
 
-  function postData(form) {
+  // Post data
+
+  const postData = async (url, data) => {
+    let res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: data,
+    });
+
+    return await res.json();
+  };
+
+  async function getRes(url) {
+    let res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    }
+
+    return await res.json();
+  }
+
+  // Bind post data
+
+  function bindPostData(form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
       const formData = new FormData(form);
-      
-      const object = {};
-      formData.forEach(function (value, key) {
-        object[key] = value;
-      });
-      
-      fetch("server.php", {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: formData,
-      })
+
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+      postData("http://localhost:3000/requests", json)
         .then((data) => {
           console.log(data);
           showThanksModal(message.success);
@@ -286,4 +312,8 @@ document.addEventListener("DOMContentLoaded", () => {
       hideModalWindow();
     }, 5000);
   }
+
+  fetch("../db/db.json")
+    .then((data) => data.json())
+    .then((res) => console.log(res));
 });
