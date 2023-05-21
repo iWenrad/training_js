@@ -22,11 +22,40 @@
       "price": 21
     }
   ],
+  "slider": [
+    {
+      "img": "img/slider/1.jpg"
+    },
+    {
+      "img": "img/slider/2.jpg"
+    },
+    {
+      "img": "img/slider/3.jpg"
+    },
+    {
+      "img": "img/slider/4.jpg"
+    }
+  ],
   "requests": [
     {
       "name": "1",
       "phone": "2",
       "id": 1
+    },
+    {
+      "name": "1",
+      "phone": "32423",
+      "id": 2
+    },
+    {
+      "name": "1",
+      "phone": "2",
+      "id": 3
+    },
+    {
+      "name": "1",
+      "phone": "2",
+      "id": 4
     }
   ]
 }

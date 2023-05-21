@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show modal window
 
-  const show = document.querySelector("button"),
+  const show = document.querySelector(".btn"),
     someModalWindow = document.querySelector(".modal");
 
   function showModalWindow() {
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
   show.addEventListener("click", showModalWindow);
   someModalWindow.addEventListener("click", (e) => {
     const target = e.target;
-
+    console.log("open");
     if (
       target.classList.contains("modal__close") ||
       target.classList.contains("modal") ||
@@ -197,23 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // getRes("http://localhost:3000/main").then((data) => {
-  // data.forEach(({ img, altimg, title, descr, price }) => {
-  //   new MenuCard(
-  //     img,
-  //     altimg,
-  //     title,
-  //     descr,
-  //     price,
-  //     ".menu .container"
-  //   ).render();
-  // });
-  // });
-
-  // use axios
-
-  axios.get("http://localhost:3000/main").then((data) => {
-    data.data.forEach(({ img, altimg, title, descr, price }) => {
+  getRes("http://localhost:3000/main").then((data) => {
+    data.forEach(({ img, altimg, title, descr, price }) => {
       new MenuCard(
         img,
         altimg,
@@ -224,6 +209,21 @@ document.addEventListener("DOMContentLoaded", () => {
       ).render();
     });
   });
+
+  // use axios
+
+  // axios.get("http://localhost:3000/main").then((data) => {
+  //   data.data.forEach(({ img, altimg, title, descr, price }) => {
+  //     new MenuCard(
+  //       img,
+  //       altimg,
+  //       title,
+  //       descr,
+  //       price,
+  //       ".menu .container"
+  //     ).render();
+  //   });
+  // });
 
   // Forms
 
@@ -316,4 +316,46 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("../db/db.json")
     .then((data) => data.json())
     .then((res) => console.log(res));
+
+  // Slider
+
+  let count = 1;
+  const slides = document.querySelectorAll(".offer__slide"),
+    left = document.querySelector(".offer__slider-prev"),
+    right = document.querySelector(".offer__slider-next"),
+    current = document.querySelector("#current"),
+    total = document.querySelector("#total");
+
+  function slider(n) {
+    if (n > slides.length) {
+      count = 1;
+    } else if (n < 1) {
+      count = slides.length;
+    }
+
+    slides.forEach((item) => {
+      item.style.display = "none";
+    });
+
+    if (count < 10) {
+      current.textContent = `0${count}`;
+      total.textContent = `0${slides.length}`;
+    } else {
+      current.textContent = count;
+      total.textContent = slides.length;
+    }
+
+    slides[count - 1].style.display = "block";
+    slides[count - 1].classList.add("fade");
+    // current.classList.add("fade");
+  }
+
+  function countSlides(n) {
+    slider((count += n));
+  }
+
+  left.addEventListener("click", () => countSlides(-1));
+  right.addEventListener("click", () => countSlides(1));
+
+  slider(count);
 });
