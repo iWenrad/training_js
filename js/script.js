@@ -225,20 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //   });
   // });
 
-  // Forms
-
-  const forms = document.querySelectorAll("form");
-
-  const message = {
-    loading: "Загрузка",
-    success: "Дякую! Ми скоро з вами зв'яжемось",
-    failure: "Щось пішло не так",
-  };
-
-  forms.forEach((form) => {
-    bindPostData(form);
-  });
-
   // Post data
 
   const postData = async (url, data) => {
@@ -260,6 +246,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return await res.json();
   }
+
+  // Forms
+
+  const forms = document.querySelectorAll("form");
+
+  const message = {
+    loading: "Загрузка",
+    success: "Дякую! Ми скоро з вами зв'яжемось",
+    failure: "Щось пішло не так",
+  };
+
+  forms.forEach((form) => {
+    bindPostData(form);
+  });
 
   // Bind post data
 
@@ -319,43 +319,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Slider
 
-  let count = 1;
+  let count = 1,
+    offset = 0;
   const slides = document.querySelectorAll(".offer__slide"),
     left = document.querySelector(".offer__slider-prev"),
     right = document.querySelector(".offer__slider-next"),
     current = document.querySelector("#current"),
-    total = document.querySelector("#total");
+    total = document.querySelector("#total"),
+    slidesWrapper = document.querySelector(".offer__slider-wrapper"),
+    slidesField = document.querySelector(".offer__slider-inner"),
+    width = window.getComputedStyle(slidesWrapper).width;
 
-  function slider(n) {
-    if (n > slides.length) {
-      count = 1;
-    } else if (n < 1) {
-      count = slides.length;
+  if (count < 10) {
+    current.textContent = `0${count}`;
+    total.textContent = `0${slides.length}`;
+  } else {
+    current.textContent = count;
+    total.textContent = slides.length;
+  }
+
+  slidesField.style.width = 100 * slides.length + "%";
+
+  slides.forEach((slide) => {
+    slide.style.width = width;
+  });
+
+  left.addEventListener("click", () => {
+    if (offset <= 0) {
+      offset = +parseInt(width) * (slides.length - 1);
+    } else {
+      offset -= +parseInt(width);
     }
 
-    slides.forEach((item) => {
-      item.style.display = "none";
-    });
+    slidesField.style.transform = `translateX(-${offset}px)`;
 
-    if (count < 10) {
+    if(count <= 1) {
+      count = 4;
+    } else {
+      count--;
+    }
+
+    if (slides.length < 10) {
       current.textContent = `0${count}`;
-      total.textContent = `0${slides.length}`;
     } else {
       current.textContent = count;
-      total.textContent = slides.length;
+    }
+  });
+
+  right.addEventListener("click", () => {
+    console.log(count);
+    if (offset == +parseInt(width) * (slides.length - 1)) {
+      offset = 0;
+    } else {
+      offset += +parseInt(width);
     }
 
-    slides[count - 1].style.display = "block";
-    slides[count - 1].classList.add("fade");
-    // current.classList.add("fade");
-  }
+    slidesField.style.transform = `translateX(-${offset}px)`;
 
-  function countSlides(n) {
-    slider((count += n));
-  }
-
-  left.addEventListener("click", () => countSlides(-1));
-  right.addEventListener("click", () => countSlides(1));
-
-  slider(count);
+    if(count == slides.length) {
+      count = 1;
+    } else {
+      count++;
+    }
+    
+    if (slides.length < 10) {
+      current.textContent = `0${count}`;
+    } else {
+      current.textContent = count;
+    }
+  });
 });
