@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show modal window after 6s.
 
-  const modalInterval = setInterval(showModalWindow, 15000);
+  const modalInterval = setInterval(showModalWindow, 6000);
 
   // Show window after scrolling
 
@@ -322,7 +322,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let count = 1,
     offset = 0;
   const slides = document.querySelectorAll(".offer__slide"),
-    slider = document.querySelector(".offer__slider"),
     left = document.querySelector(".offer__slider-prev"),
     right = document.querySelector(".offer__slider-next"),
     current = document.querySelector("#current"),
@@ -345,44 +344,6 @@ document.addEventListener("DOMContentLoaded", () => {
     slide.style.width = width;
   });
 
-  const indicators = document.createElement("ol");
-  dots = [];
-
-  indicators.classList.add("carousel-indicators");
-  slider.append(indicators);
-
-  function createDots() {
-    for (let i = 0; i < slides.length; i++) {
-      const dot = document.createElement("li");
-      dot.classList.add("dot");
-      dot.setAttribute("data-slide-to", i + 1);
-
-      if (i == 0) {
-        dot.style.opacity = 1;
-      }
-
-      indicators.append(dot);
-      dots.push(dot);
-    }
-  }
-
-  createDots();
-
-  function dotIndicate() {
-    dots.forEach((dot) => {
-      dot.style.opacity = "0.5";
-    });
-    dots[count - 1].style.opacity = 1;
-  }
-
-  function checkSlideNumber() {
-    if (slides.length < 10) {
-      current.textContent = `0${count}`;
-    } else {
-      current.textContent = count;
-    }
-  }
-
   left.addEventListener("click", () => {
     if (offset <= 0) {
       offset = +parseInt(width) * (slides.length - 1);
@@ -392,14 +353,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     slidesField.style.transform = `translateX(-${offset}px)`;
 
-    if (count <= 1) {
+    if(count <= 1) {
       count = 4;
     } else {
       count--;
     }
 
-    checkSlideNumber();
-    dotIndicate();
+    if (slides.length < 10) {
+      current.textContent = `0${count}`;
+    } else {
+      current.textContent = count;
+    }
   });
 
   right.addEventListener("click", () => {
@@ -412,27 +376,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     slidesField.style.transform = `translateX(-${offset}px)`;
 
-    if (count == slides.length) {
+    if(count == slides.length) {
       count = 1;
     } else {
       count++;
     }
-
-    checkSlideNumber();
-    dotIndicate();
-  });
-
-  dots.forEach((dot) => {
-    dot.addEventListener("click", (e) => {
-      const slideTo = e.target.getAttribute("data-slide-to");
-
-      count = slideTo;
-      offset = +parseInt(width) * (slideTo - 1);
-
-      slidesField.style.transform = `translateX(-${offset}px)`;
-
-      checkSlideNumber();
-      dotIndicate();
-    });
+    
+    if (slides.length < 10) {
+      current.textContent = `0${count}`;
+    } else {
+      current.textContent = count;
+    }
   });
 });
