@@ -297,6 +297,7 @@ a {
 }
 
 .offer__slider {
+	position: relative;
 	width: 650px;
 	margin-top: 50px;
 	display: flex;
@@ -315,7 +316,13 @@ a {
 .offer__slider-wrapper {
 	width: 100%;
 	margin-top: 15px;
-	box-shadow: 0 4px 30px rgba(0, 0, 0, .25)
+	box-shadow: 0 4px 30px rgba(0, 0, 0, .25);
+	overflow: hidden;
+}
+
+.offer__slider-inner {
+	display: flex;
+	transition: .5s all;
 }
 
 .offer__slider-prev {
@@ -343,6 +350,35 @@ a {
 	width: 100%;
 	height: 100%;
 	object-fit: cover
+}
+
+.carousel-indicators {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 15;
+	display: flex;
+	justify-content: center;
+	margin-right: 15%;
+	margin-left: 15%;
+	list-style: none;
+}
+
+.dot {
+	box-sizing: content-box;
+	flex: 0 1 auto;
+	width: 30px;
+	height: 6px;
+	margin-right: 3px;
+	margin-left: 3px;
+	cursor: pointer;
+	background-color: #fff;
+	background-clip: padding-box;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	opacity: .5;
+	transition: opacity .6s ease;
 }
 
 .calculating {
