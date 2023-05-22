@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => data.json())
     .then((res) => console.log(res));
 
-  // Slider
+  // Slider with nav dots
 
   let count = 1,
     offset = 0;
