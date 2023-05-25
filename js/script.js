@@ -439,7 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // calc
 
   const result = document.querySelector(".calculating__result span");
-  let sex, height, weight, age, ratio;
+  let sex = 'female', height, weight, age, ratio = 1.375;
 
   function calcTotal() {
     if (!sex || !height || !weight || !age || !ratio) {
@@ -490,6 +490,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.querySelector(selector);
 
     input.addEventListener("input", (e) => {
+      if (input.value.match(/\D/g)) {
+        input.style.border = 'rgba(255, 0, 0, 0.8)';  
+        input.style.boxShadow = '0 4px 15px red';
+      } else {
+        input.style.border = 'none';
+        input.style.boxShadow = '0 4px 15px rgba(0, 0, 0, .2)';
+      }
+      
       switch (input.getAttribute("id")) {
         case "height":
           height = +input.value;
